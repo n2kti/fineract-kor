@@ -1,0 +1,537 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
+import { Component, OnInit, inject, signal } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { FormsModule } from '@angular/forms';
+import { TranslateModule } from '@ngx-translate/core';
+import {
+  IonCard,
+  IonCardHeader,
+  IonCardTitle,
+  IonCardContent,
+  IonGrid,
+  IonRow,
+  IonCol,
+  IonItem,
+  IonLabel,
+  IonSelect,
+  IonSelectOption,
+  IonInput,
+  IonTextarea,
+  IonButton,
+  IonDatetime,
+  IonDatetimeButton,
+  IonModal,
+} from '@ionic/angular/standalone';
+import {
+  AccountTransfersService,
+  OfficesService,
+  ClientService,
+  AccountTransferRequest,
+  GetOfficesResponse,
+  GetClientsPageItemsResponse,
+} from '../../api';
+import {
+  formatDateToFineract,
+  FINERACT_DATE_FORMAT,
+  FINERACT_LOCALE,
+} from '../../core/utils/date-formatter';
+
+export interface MiniAccount {
+  id: number;
+  accountNo: string;
+  productName: string;
+}
+
+@Component({
+  selector: 'app-account-transfer-form',
+  standalone: true,
+  imports: [
+    FormsModule,
+    TranslateModule,
+    IonCard,
+    IonCardHeader,
+    IonCardTitle,
+    IonCardContent,
+    IonGrid,
+    IonRow,
+    IonCol,
+    IonItem,
+    IonLabel,
+    IonSelect,
+    IonSelectOption,
+    IonInput,
+    IonTextarea,
+    IonButton,
+    IonDatetime,
+    IonDatetimeButton,
+    IonModal,
+  ],
+  template: `
+    <div class="form-container">
+      <ion-card>
+        <ion-card-header>
+          <ion-card-title>{{ 'ACTIONS.ACCOUNT_TRANSFER' | translate }}</ion-card-title>
+        </ion-card-header>
+
+        <ion-card-content>
+          <form #transferForm="ngForm" (ngSubmit)="onSubmit()" class="transfer-form">
+            <ion-grid class="ion-no-padding">
+              <ion-row>
+                <!-- From Account Section -->
+                <ion-col size="12" size-md="6">
+                  <div class="section">
+                    <h3>{{ 'CLIENTS.TRANSFER_FROM' | translate }}</h3>
+                    <ion-item fill="outline">
+                      <ion-label position="stacked">{{ 'COMMON.OFFICE' | translate }}</ion-label>
+                      <ion-select
+                        [attr.aria-label]="'COMMON.OFFICE' | translate"
+                        interface="popover"
+                        name="fromOfficeId"
+                        [(ngModel)]="request.fromOfficeId"
+                        (ionChange)="onOfficeChange('from')"
+                        required
+                        id="transfer-from-office-select"
+                        data-testid="transfer-from-office-select"
+                      >
+                        @for (office of offices(); track office.id) {
+                          <ion-select-option [value]="office.id">{{
+                            office.name
+                          }}</ion-select-option>
+                        }
+                      </ion-select>
+                    </ion-item>
+
+                    <ion-item fill="outline">
+                      <ion-label position="stacked">{{ 'COMMON.CLIENT' | translate }}</ion-label>
+                      <ion-select
+                        [attr.aria-label]="'COMMON.CLIENT' | translate"
+                        interface="popover"
+                        name="fromClientId"
+                        [(ngModel)]="request.fromClientId"
+                        (ionChange)="onClientChange('from')"
+                        required
+                        id="transfer-from-client-select"
+                        data-testid="transfer-from-client-select"
+                      >
+                        @for (client of fromClients(); track client.id) {
+                          <ion-select-option [value]="client.id">{{
+                            client.displayName
+                          }}</ion-select-option>
+                        }
+                      </ion-select>
+                    </ion-item>
+
+                    <ion-item fill="outline">
+                      <ion-label position="stacked">{{
+                        'CLIENTS.ACCOUNT_TYPE' | translate
+                      }}</ion-label>
+                      <ion-select
+                        [attr.aria-label]="'CLIENTS.ACCOUNT_TYPE' | translate"
+                        interface="popover"
+                        name="fromAccountType"
+                        [(ngModel)]="request.fromAccountType"
+                        (ionChange)="onAccountTypeChange('from')"
+                        required
+                        id="transfer-from-account-type-select"
+                        data-testid="transfer-from-account-type-select"
+                      >
+                        <ion-select-option [value]="'2'">{{
+                          'nav.savingsAccounts' | translate
+                        }}</ion-select-option>
+                        <ion-select-option [value]="'1'">{{
+                          'nav.loanAccounts' | translate
+                        }}</ion-select-option>
+                      </ion-select>
+                    </ion-item>
+
+                    <ion-item fill="outline">
+                      <ion-label position="stacked">{{
+                        'CLIENTS.ACCOUNT_NO' | translate
+                      }}</ion-label>
+                      <ion-select
+                        [attr.aria-label]="'CLIENTS.ACCOUNT_NO' | translate"
+                        interface="popover"
+                        name="fromAccountId"
+                        [(ngModel)]="request.fromAccountId"
+                        required
+                        id="transfer-from-account-select"
+                        data-testid="transfer-from-account-select"
+                      >
+                        @for (account of fromAccounts(); track account.id) {
+                          <ion-select-option [value]="account.id"
+                            >{{ account.accountNo }} ({{ account.productName }})</ion-select-option
+                          >
+                        }
+                      </ion-select>
+                    </ion-item>
+                  </div>
+                </ion-col>
+
+                <!-- To Account Section -->
+                <ion-col size="12" size-md="6">
+                  <div class="section">
+                    <h3>{{ 'CLIENTS.TRANSFER_TO' | translate }}</h3>
+                    <ion-item fill="outline">
+                      <ion-label position="stacked">{{ 'COMMON.OFFICE' | translate }}</ion-label>
+                      <ion-select
+                        [attr.aria-label]="'COMMON.OFFICE' | translate"
+                        interface="popover"
+                        name="toOfficeId"
+                        [(ngModel)]="request.toOfficeId"
+                        (ionChange)="onOfficeChange('to')"
+                        required
+                        id="transfer-to-office-select"
+                        data-testid="transfer-to-office-select"
+                      >
+                        @for (office of offices(); track office.id) {
+                          <ion-select-option [value]="office.id">{{
+                            office.name
+                          }}</ion-select-option>
+                        }
+                      </ion-select>
+                    </ion-item>
+
+                    <ion-item fill="outline">
+                      <ion-label position="stacked">{{ 'COMMON.CLIENT' | translate }}</ion-label>
+                      <ion-select
+                        [attr.aria-label]="'COMMON.CLIENT' | translate"
+                        interface="popover"
+                        name="toClientId"
+                        [(ngModel)]="request.toClientId"
+                        (ionChange)="onClientChange('to')"
+                        required
+                        id="transfer-to-client-select"
+                        data-testid="transfer-to-client-select"
+                      >
+                        @for (client of toClients(); track client.id) {
+                          <ion-select-option [value]="client.id">{{
+                            client.displayName
+                          }}</ion-select-option>
+                        }
+                      </ion-select>
+                    </ion-item>
+
+                    <ion-item fill="outline">
+                      <ion-label position="stacked">{{
+                        'CLIENTS.ACCOUNT_TYPE' | translate
+                      }}</ion-label>
+                      <ion-select
+                        [attr.aria-label]="'CLIENTS.ACCOUNT_TYPE' | translate"
+                        interface="popover"
+                        name="toAccountType"
+                        [(ngModel)]="request.toAccountType"
+                        (ionChange)="onAccountTypeChange('to')"
+                        required
+                        id="transfer-to-account-type-select"
+                        data-testid="transfer-to-account-type-select"
+                      >
+                        <ion-select-option [value]="'2'">{{
+                          'nav.savingsAccounts' | translate
+                        }}</ion-select-option>
+                        <ion-select-option [value]="'1'">{{
+                          'nav.loanAccounts' | translate
+                        }}</ion-select-option>
+                      </ion-select>
+                    </ion-item>
+
+                    <ion-item fill="outline">
+                      <ion-label position="stacked">{{
+                        'CLIENTS.ACCOUNT_NO' | translate
+                      }}</ion-label>
+                      <ion-select
+                        [attr.aria-label]="'CLIENTS.ACCOUNT_NO' | translate"
+                        interface="popover"
+                        name="toAccountId"
+                        [(ngModel)]="request.toAccountId"
+                        required
+                        id="transfer-to-account-select"
+                        data-testid="transfer-to-account-select"
+                      >
+                        @for (account of toAccounts(); track account.id) {
+                          <ion-select-option [value]="account.id"
+                            >{{ account.accountNo }} ({{ account.productName }})</ion-select-option
+                          >
+                        }
+                      </ion-select>
+                    </ion-item>
+                  </div>
+                </ion-col>
+              </ion-row>
+            </ion-grid>
+
+            <div class="transfer-details">
+              <ion-item fill="outline">
+                <ion-label position="stacked">{{
+                  'CLIENTS.TRANSFER_AMOUNT' | translate
+                }}</ion-label>
+                <ion-input
+                  [attr.aria-label]="'CLIENTS.TRANSFER_AMOUNT' | translate"
+                  type="number"
+                  name="transferAmount"
+                  [(ngModel)]="request.transferAmount"
+                  required
+                  id="transfer-amount-input"
+                  data-testid="transfer-amount-input"
+                ></ion-input>
+              </ion-item>
+
+              <ion-item fill="outline">
+                <ion-label position="stacked">{{ 'CLIENTS.TRANSFER_DATE' | translate }}</ion-label>
+                <ion-datetime-button datetime="transfer-date-picker"></ion-datetime-button>
+                <ion-modal [keepContentsMounted]="true">
+                  <ng-template>
+                    <ion-datetime
+                      id="transfer-date-picker"
+                      data-testid="transfer-date-picker"
+                      presentation="date"
+                      (ionChange)="onTransferDateChange($event)"
+                    ></ion-datetime>
+                  </ng-template>
+                </ion-modal>
+              </ion-item>
+
+              <ion-item fill="outline" class="full-width">
+                <ion-label position="stacked">{{ 'COMMON.DESCRIPTION' | translate }}</ion-label>
+                <ion-textarea
+                  [attr.aria-label]="'COMMON.DESCRIPTION' | translate"
+                  name="transferDescription"
+                  [(ngModel)]="request.transferDescription"
+                  rows="2"
+                  id="transfer-description-input"
+                  data-testid="transfer-description-input"
+                ></ion-textarea>
+              </ion-item>
+            </div>
+
+            <div class="form-actions">
+              <ion-button
+                fill="clear"
+                color="medium"
+                type="button"
+                (click)="onCancel()"
+                id="transfer-cancel-btn"
+                data-testid="transfer-cancel-btn"
+              >
+                {{ 'COMMON.CANCEL' | translate }}
+              </ion-button>
+              <ion-button
+                color="primary"
+                type="submit"
+                [disabled]="!transferForm.form.valid"
+                id="transfer-submit-btn"
+                data-testid="transfer-submit-btn"
+              >
+                {{ 'COMMON.CONFIRM' | translate }}
+              </ion-button>
+            </div>
+          </form>
+        </ion-card-content>
+      </ion-card>
+    </div>
+  `,
+  styles: [
+    `
+      .form-container {
+        padding: 24px;
+        max-width: 1000px;
+        margin: 0 auto;
+      }
+      .transfer-form {
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+        padding-top: 16px;
+      }
+      .transfer-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 32px;
+      }
+      .section {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+      .section h3 {
+        margin: 0 0 8px 0;
+        color: var(--primary-color);
+        border-bottom: 1px solid #eee;
+        padding-bottom: 4px;
+      }
+      .transfer-details {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+        border-top: 1px dashed #ccc;
+        padding-top: 24px;
+      }
+    `,
+  ],
+})
+export class AccountTransferFormComponent implements OnInit {
+  private readonly transfersService = inject(AccountTransfersService);
+  private readonly officesService = inject(OfficesService);
+  private readonly clientService = inject(ClientService);
+  private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
+
+  readonly offices = signal<GetOfficesResponse[]>([]);
+  readonly fromClients = signal<GetClientsPageItemsResponse[]>([]);
+  readonly toClients = signal<GetClientsPageItemsResponse[]>([]);
+  readonly fromAccounts = signal<MiniAccount[]>([]);
+  readonly toAccounts = signal<MiniAccount[]>([]);
+
+  transferDate = new Date();
+  request: AccountTransferRequest = {
+    fromOfficeId: undefined,
+    fromClientId: undefined,
+    fromAccountType: '2',
+    fromAccountId: undefined,
+    toOfficeId: undefined,
+    toClientId: undefined,
+    toAccountType: '2',
+    toAccountId: undefined,
+    transferAmount: '',
+    transferDescription: '',
+  };
+
+  ngOnInit(): void {
+    this.loadOffices();
+    const queryParams = this.route.snapshot.queryParams;
+    if (queryParams['fromOfficeId'])
+      this.request.fromOfficeId = queryParams['fromOfficeId']?.toString();
+    if (queryParams['fromClientId']) {
+      this.request.fromClientId = queryParams['fromClientId']?.toString();
+      this.onClientChange('from');
+    }
+    if (queryParams['fromAccountId'])
+      this.request.fromAccountId = queryParams['fromAccountId']?.toString();
+    if (queryParams['fromAccountType'])
+      this.request.fromAccountType = queryParams['fromAccountType']?.toString();
+  }
+
+  loadOffices(): void {
+    this.officesService.getOffices().subscribe((data) => {
+      this.offices.set(data);
+      if (!this.request.fromOfficeId && data.length > 0) {
+        this.request.fromOfficeId = data[0].id?.toString();
+        this.onOfficeChange('from');
+      }
+      if (!this.request.toOfficeId && data.length > 0) {
+        this.request.toOfficeId = data[0].id?.toString();
+        this.onOfficeChange('to');
+      }
+    });
+  }
+
+  onOfficeChange(type: 'from' | 'to'): void {
+    const officeIdStr = type === 'from' ? this.request.fromOfficeId : this.request.toOfficeId;
+    const officeId = officeIdStr ? Number(officeIdStr) : undefined;
+    this.clientService
+      .getClients(
+        officeId,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+      )
+      .subscribe((data) => {
+        if (type === 'from') {
+          this.fromClients.set(Array.from(data.pageItems || []));
+        } else {
+          this.toClients.set(Array.from(data.pageItems || []));
+        }
+      });
+  }
+
+  onClientChange(type: 'from' | 'to'): void {
+    this.onAccountTypeChange(type);
+  }
+
+  onAccountTypeChange(type: 'from' | 'to'): void {
+    const clientId =
+      type === 'from' ? Number(this.request.fromClientId) : Number(this.request.toClientId);
+    const accountType = type === 'from' ? this.request.fromAccountType : this.request.toAccountType;
+
+    if (!clientId) return;
+
+    this.clientService.getClientsClientIdAccounts(clientId).subscribe((data) => {
+      if (accountType === '2') {
+        const savings = Array.from(data.savingsAccounts || []) as unknown as MiniAccount[];
+        if (type === 'from') this.fromAccounts.set(savings);
+        else this.toAccounts.set(savings);
+      } else {
+        const loans = Array.from(data.loanAccounts || []) as unknown as MiniAccount[];
+        if (type === 'from') this.fromAccounts.set(loans);
+        else this.toAccounts.set(loans);
+      }
+    });
+  }
+
+  onTransferDateChange(event: CustomEvent): void {
+    if (event.detail.value) {
+      this.transferDate = new Date(event.detail.value as string);
+    }
+  }
+
+  onSubmit(): void {
+    const payload: AccountTransferRequest = {
+      fromOfficeId: this.request.fromOfficeId ? String(this.request.fromOfficeId) : undefined,
+      fromClientId: this.request.fromClientId ? String(this.request.fromClientId) : undefined,
+      fromAccountType: this.request.fromAccountType
+        ? String(this.request.fromAccountType)
+        : undefined,
+      fromAccountId: this.request.fromAccountId ? String(this.request.fromAccountId) : undefined,
+      toOfficeId: this.request.toOfficeId ? String(this.request.toOfficeId) : undefined,
+      toClientId: this.request.toClientId ? String(this.request.toClientId) : undefined,
+      toAccountType: this.request.toAccountType ? String(this.request.toAccountType) : undefined,
+      toAccountId: this.request.toAccountId ? String(this.request.toAccountId) : undefined,
+      transferAmount: this.request.transferAmount ? String(this.request.transferAmount) : undefined,
+      transferDescription: this.request.transferDescription,
+      transferDate: formatDateToFineract(this.transferDate),
+      dateFormat: FINERACT_DATE_FORMAT,
+      locale: FINERACT_LOCALE,
+    };
+
+    this.transfersService.postAccounttransfers(payload).subscribe({
+      next: () => {
+        this.router.navigate(['/clients/view', this.request.fromClientId]);
+      },
+      error: (err) => console.error('Transfer failed', err),
+    });
+  }
+
+  onCancel(): void {
+    if (this.request.fromClientId) {
+      this.router.navigate(['/clients/view', this.request.fromClientId]);
+    } else {
+      this.router.navigate(['/clients']);
+    }
+  }
+}

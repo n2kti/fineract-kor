@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:d95f3deaba56f44f1d383872ee90da6c32194ae41f656010f8256d74fc12980a",
+  "claims": [
+    {
+      "id": "claim_652ea6225cb4410ba0f09f1046734a45",
+      "statement": "Fineract 회계 엔진은 JournalEntryType을 기준으로 복식부기 차변과 대변 거래를 기록한다.",
+      "evidence": [
+        {
+          "resource": "repo://fineract-repo/fineract-core/src/main/java/org/apache/fineract/accounting/journalentry/domain/JournalEntryType.java",
+          "version": "repo-file-v1:sha256:c4223d869ca1bbac121df6ab9048cdbb510c5e5e656de267254bc6f339c890ce"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.7.0",
+    "at": "2026-10-05T15:48:47.442Z"
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:b454e1fcd4b466f13ec95e4a9dc5ea7e4a4dcbac70d5a6518d921ecbdb96f110",
+  "claims": [
+    {
+      "id": "claim_d7b7fd84c0804737a9680620bc5d92c4",
+      "statement": "Fineract 프로젝트는 Gradle 멀티 모듈 설정을 기반으로 단위 테스트 및 통합 테스트 스위트를 빌드한다.",
+      "evidence": [
+        {
+          "resource": "repo://fineract-repo/settings.gradle",
+          "version": "repo-file-v1:sha256:cb20cb8ecbdb1c26f709ffb459ad4bbf479b749f0b1e053cdf3cabab8c23f6d3"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.7.0",
+    "at": "2026-10-05T15:48:47.442Z"
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "fineractApiUrl": "/api/v1",
+  "defaultTenant": "default",
+  "rbacEnabled": true,
+  "institutionType": "universal",
+  "developerToolsEnabled": false
+}

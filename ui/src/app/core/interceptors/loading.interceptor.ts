@@ -1,0 +1,45 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
+import { HttpInterceptorFn } from '@angular/common/http';
+import { inject } from '@angular/core';
+import { finalize } from 'rxjs/operators';
+import { LoadingService } from '../services/loading.service';
+import { SKIP_LOADING } from '../http/http-context';
+
+/**
+ * Interceptor to automatically track HTTP requests and update the LoadingService.
+ */
+export const loadingInterceptor: HttpInterceptorFn = (req, next) => {
+  const loadingService = inject(LoadingService);
+
+  // The X-Skip-Loading header is the older form of this opt-out and is still honoured, but a
+  // header is sent to Fineract to be ignored there. Prefer skipLoading() from ../http/http-context.
+  if (req.context.get(SKIP_LOADING) || req.headers.has('X-Skip-Loading')) {
+    return next(req);
+  }
+
+  loadingService.setLoading(true, req.url);
+
+  return next(req).pipe(
+    finalize(() => {
+      loadingService.setLoading(false, req.url);
+    }),
+  );
+};

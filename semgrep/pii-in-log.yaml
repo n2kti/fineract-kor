@@ -1,0 +1,17 @@
+# 직접 규칙: 공개 규칙에 없는 주민번호·식별번호 로그. 시험 예제 pii-in-log.java — semgrep --test semgrep/
+rules:
+  - id: pii-in-log
+    languages: [java]
+    severity: ERROR
+    message: 주민번호·식별번호로 보이는 값을 로그에 남긴다. 검증된 마스킹 함수 결과만 로그에 넣을 것.
+    metadata: { cwe: "CWE-532", category: 개인정보 }
+    patterns:
+      - pattern: $LOG.$LEVEL(..., $X, ...)
+      - metavariable-regex: { metavariable: $LOG, regex: '(?i)^(log|logger)$' }
+      - metavariable-regex: { metavariable: $LEVEL, regex: '^(trace|debug|info|warn|error)$' }
+      - metavariable-regex:
+          metavariable: $X
+          # metavariable-regex 는 앞 고정 일치라 ^.* 로 시작. 소문자 약어는 앞이 영문자가 아닐 때만(validNo 오탐 방지).
+          regex: '^(.*[^a-zA-Z])?(id_?no|rrn|ssn|jumin)|^.*(IdNo|Rrn|Ssn|Jumin|[Rr]esident_?(Reg|No|Number)|주민)'
+      # 마스킹 함수(이름에 mask) 결과는 허용.
+      - metavariable-regex: { metavariable: $X, regex: '^(?!.*(?i:mask))' }

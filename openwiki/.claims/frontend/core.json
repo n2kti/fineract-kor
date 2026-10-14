@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:333b332aabb84c7f75c18785cee372aeeb1a39bd1b93bc01437c36ea97f65317",
+  "claims": [
+    {
+      "id": "claim_408234404ce044ecac2e32793b6244c9",
+      "statement": "Fineract Backoffice UI는 Native Federation을 초기화한 후 Angular 애플리케이션을 부트스트랩한다.",
+      "evidence": [
+        {
+          "resource": "repo://fineract-backoffice-ui/src/main.ts",
+          "version": "repo-file-v1:sha256:b4caf195c86898d84cf56d7ff90847b7018c245d5e07114eafb98c0bbfb6b45e"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.7.0",
+    "at": "2026-10-05T15:48:47.442Z"
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:e8e57411bd90dbdd976822a129ddb9979e077b6c17bc459046b00b78c2516822",
+  "claims": [
+    {
+      "id": "claim_ff5305bdc1a94226978d2490546f72aa",
+      "statement": "Fineract은 TenantDataSourceFactory 및 Liquibase를 통해 테넌트별 데이터 소스를 동적으로 구성하고 마이그레이션한다.",
+      "evidence": [
+        {
+          "resource": "repo://fineract-repo/fineract-core/src/main/java/org/apache/fineract/infrastructure/core/service/migration/TenantDataSourceFactory.java",
+          "version": "repo-file-v1:sha256:0b2d9f8b14c82d90c9578a7e05f5b1ad4b18cb962fed3b5a2211d6d91e25f329"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.7.0",
+    "at": "2026-10-05T15:48:47.442Z"
+  }
+}

@@ -1,0 +1,14 @@
+p/java
+p/findsecbugs
+p/owasp-top-ten
+p/cwe-top-25
+p/security-audit
+p/secrets
+p/gitleaks
+p/sql-injection
+p/jwt
+p/xss
+p/command-injection
+p/insecure-transport
+p/typescript
+p/javascript

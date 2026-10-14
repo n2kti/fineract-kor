@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:762952d615d681f1a7356baf6c92f53168d294befb20a3e94ed523542ce1bfee",
+  "claims": [
+    {
+      "id": "claim_507c9546373249148fcde412f291d74e",
+      "statement": "Apache Fineract는 오픈소스 코어 뱅킹 플랫폼으로 로컬 개발 환경 및 분산 금융 서비스 구축을 지원한다.",
+      "evidence": [
+        {
+          "resource": "repo://fineract-repo/README.md",
+          "version": "repo-file-v1:sha256:b42c223f29cf73a844cadca712747c20555d9ca49c350af8e808833ec0262bab"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.7.0",
+    "at": "2026-10-05T10:52:04.485Z"
+  }
+}

@@ -1,0 +1,46 @@
+notifications:
+  commits: commits@fineract.apache.org
+  pullrequests: issues@fineract.apache.org
+  issues: issues@fineract.apache.org
+github:
+  description: 'Angular back-office UI for Apache Fineract, the open-source core banking platform'
+  homepage: https://fineract.apache.org
+  labels:
+    - angular
+    - apache
+    - backoffice
+    - banking
+    - core-banking
+    - fintech
+    - group-lending
+    - group-savings
+    - ionic
+    - lending
+    - loans
+    - microfinance
+    - savings
+    - social-impact
+    - tech4good
+    - typescript
+    - ui
+  features:
+    wiki: true
+    issues: true
+    projects: true
+  enabled_merge_buttons:
+    merge: true
+    squash: false
+    rebase: false
+  rulesets:
+    - name: 'Branch Protection'
+      type: branch
+      branches:
+        includes:
+          - 'main'
+      restrict_deletion: true
+      restrict_force_push: true
+      required_signatures: true
+      required_linear_history: false
+      required_conversation_resolution: true
+      required_pull_request_reviews:
+        required_approving_review_count: 0

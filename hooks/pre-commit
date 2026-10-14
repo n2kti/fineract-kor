@@ -1,0 +1,9 @@
+#!/bin/sh
+# 커밋 전 코드 취약점 검사(Semgrep CE). 규칙 = semgrep/packs 의 공개 규칙(실행 때 받음, 재배포 금지라 저장소에 안 둠) + semgrep/ 직접 규칙.
+# 이번 커밋에 들어가는 Java·TS 파일만. PR 에서는 .github/workflows/ci.yml 이 같은 규칙으로 다시 검사한다.
+# ponytail: 스테이징본이 아니라 작업 트리 파일을 검사하고, 손댄 파일의 기존 문제도 같이 걸린다.
+#           기존 문제는 고치거나 `// nosemgrep: <규칙> 사유` 로 넘긴다.
+files=$(git diff --cached --name-only --diff-filter=ACMR -- '*.java' '*.ts' ':!semgrep/')
+[ -z "$files" ] && exit 0
+configs=$(sed 's/^/--config /' semgrep/packs)
+exec semgrep scan $configs --config semgrep/ --error --metrics off --disable-version-check --quiet $files

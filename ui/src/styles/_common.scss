@@ -1,0 +1,307 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
+/* Design Tokens */
+:root {
+  --primary-color: #3498db;
+  --primary-dark: #2980b9;
+  /* Use wherever white text sits on a primary-coloured fill. --primary-color
+     carries white at 3.15:1 and --primary-dark at 4.31:1, both short of the 4.5:1
+     WCAG AA minimum for body-sized text; this clears it at 5.3:1. Keep
+     --primary-color for accents, borders and text on light backgrounds. */
+  --primary-strong: #2471a3;
+  --secondary-color: #2c3e50;
+  --bg-color: #f0f2f5;
+  --card-bg: #ffffff;
+  --text-color: #333333;
+  --text-muted: #666666;
+  --error-color: #e74c3c;
+  --success-color: #2ecc71;
+  --warning-color: #f39c12;
+  --border-color: #dddddd;
+  --border-radius: 8px;
+  --header-height: 64px;
+  --sidebar-width: 240px;
+  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.1);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+
+  /* Surfaces. Two levels only: the page, and anything raised off it. A back-office
+     screen is a stack of cards over a page — more elevation steps would be noise. */
+  --surface-sunken: #e9ecef;
+
+  /* Interaction states. These exist as tokens because they are the values that break
+     in dark mode when a component hard-codes them: a black wash is invisible on a dark
+     row, and a white scrim flashes over a dark card. */
+  --hover-bg: rgba(44, 62, 80, 0.06);
+  --active-bg: rgba(44, 62, 80, 0.1);
+  --overlay-bg: rgba(255, 255, 255, 0.65);
+  --focus-ring: 0 0 0 3px rgba(52, 152, 219, 0.4);
+
+  /* Spacing scale. Every gap in the app should be one of these. */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+}
+
+[data-theme='dark'] {
+  --primary-color: #3498db;
+  --primary-dark: #2980b9;
+  --secondary-color: #ecf0f1;
+  --bg-color: #121212;
+  --card-bg: #1e1e1e;
+  --text-color: #e0e0e0;
+  --text-muted: #b0b0b0;
+  --border-color: #333333;
+  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.5);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.5);
+
+  --surface-sunken: #0d0d0d;
+  --hover-bg: rgba(255, 255, 255, 0.06);
+  --active-bg: rgba(255, 255, 255, 0.1);
+  --overlay-bg: rgba(18, 18, 18, 0.7);
+
+  /* Ionic components take their colours from the variables above via
+     _ionic-theme.scss, so dark mode needs no per-component overrides. */
+}
+
+/* Base styling for CDK tables.
+   @angular/cdk/table supplies the row/column engine but no styling at all, so these rules
+   stand in for what mat-table used to provide. Applied globally rather than per component
+   so every raw table looks the same. */
+table[cdk-table] {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+table[cdk-table] th,
+table[cdk-table] td {
+  padding: 12px 16px;
+  text-align: left;
+  border-bottom: 1px solid var(--border-color);
+}
+
+table[cdk-table] th {
+  font-weight: 600;
+  color: var(--secondary-color);
+  white-space: nowrap;
+}
+
+table[cdk-table] tr:hover td {
+  background-color: var(--hover-bg);
+}
+
+/* The header stays put while a long result set scrolls — these tables are read
+   top-to-bottom for minutes at a time and losing the column names costs a scroll back. */
+table[cdk-table] th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background-color: var(--card-bg);
+}
+
+/* Tab bars built from ion-segment.
+   Ionic sizes segment buttons to an equal share of the track, so once a view has
+   more than a handful of tabs every label is clipped to "CLIENT DE…" / "DOCUMEN…".
+   Entity views are the worst case (loan-view has 11 tabs, client-view 9). Size the
+   buttons to their text instead and let the row scroll horizontally — a label you
+   can read is worth more than fitting every tab on screen at once. */
+ion-segment {
+  justify-content: flex-start;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-color) transparent;
+}
+
+ion-segment::-webkit-scrollbar {
+  height: 3px;
+}
+
+ion-segment::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* Thumb stays invisible until the row is hovered, so the tab bar reads as a tab
+   bar rather than a scrolling pane. */
+ion-segment::-webkit-scrollbar-thumb {
+  background: transparent;
+  border-radius: 2px;
+}
+
+ion-segment:hover::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+}
+
+ion-segment-button {
+  flex: 0 0 auto;
+  min-width: max-content;
+}
+
+/* ion-label defaults to ellipsis truncation; the width now comes from the text. */
+ion-segment-button ion-label {
+  overflow: visible;
+  text-overflow: clip;
+  white-space: nowrap;
+}
+
+/* Tooltip surface for TooltipDirective. Global because the element is appended to the
+   body, which puts it outside any component's style scope. */
+.app-tooltip {
+  position: absolute;
+  z-index: 10001;
+  max-width: 260px;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--border-radius);
+  background: var(--secondary-color);
+  color: var(--card-bg);
+  font-size: 0.75rem;
+  line-height: 1.4;
+  box-shadow: var(--shadow-md);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.12s ease-out;
+}
+
+.app-tooltip--visible {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .app-tooltip {
+    transition: none;
+  }
+}
+
+/* Common Classes */
+.card {
+  background-color: var(--card-bg);
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow-sm);
+  padding: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.flex-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.flex-between {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.text-error {
+  color: var(--error-color);
+}
+
+.text-success {
+  color: var(--success-color);
+}
+
+.btn {
+  padding: 0.75rem 1.5rem;
+  border-radius: var(--border-radius);
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition: opacity 0.2s;
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+.btn-primary {
+  @extend .btn;
+  background-color: var(--primary-color);
+  color: white;
+
+  &:hover:not(:disabled) {
+    background-color: var(--primary-dark);
+  }
+}
+
+/* Form layout utilities — shared across all form components */
+.form-container {
+  padding: 24px;
+  margin: 0 auto;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+
+  ion-item,
+  ion-input,
+  ion-select,
+  ion-textarea {
+    width: 100%;
+  }
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.full-width {
+  grid-column: span 2;
+
+  ion-item,
+  ion-input,
+  ion-select,
+  ion-textarea {
+    width: 100%;
+  }
+}
+
+/*
+ * A control the current role cannot use.
+ *
+ * Applied by `appRequiresPermission`, which disables the control rather than removing it: the
+ * action belongs to the record on screen, so its absence would read as a missing feature. The
+ * lock says the opposite — the feature is there, this role is not allowed it — and the
+ * directive's tooltip and accessible name carry the permission to ask for.
+ *
+ * The glyph is a pseudo-element so it needs no slot in the host component's template, and it
+ * is decorative: the accessible name the directive sets already says "Requires …".
+ */
+.app-requires-permission {
+  position: relative;
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.app-requires-permission::after {
+  content: '🔒';
+  margin-inline-start: 6px;
+  font-size: 0.85em;
+  line-height: 1;
+  vertical-align: middle;
+}

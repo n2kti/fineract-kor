@@ -1,0 +1,10 @@
+fineract-kor
+Unofficial Korean localization and verification-harness fork of Apache Fineract.
+
+This repository bundles, with modifications, software developed at
+The Apache Software Foundation (http://www.apache.org/):
+
+- backend/  Apache Fineract                 (see backend/NOTICE_SOURCE, backend/LICENSE_SOURCE)
+- ui/       Apache Fineract Backoffice UI   (see ui/NOTICE, ui/LICENSE)
+
+Modified files are listed in UPSTREAM.md.

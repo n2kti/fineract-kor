@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:d02108e767b337fc396a1470708f3f1546eb2c08c6af88c5aadfeb25425874a8",
+  "claims": [
+    {
+      "id": "claim_f94e355be95549cf8f830bc27f71abd6",
+      "statement": "Fineract 이체 모듈은 AccountTransfersReadPlatformService를 통해 계좌 간 자금 이동 내역을 조회하고 처리한다.",
+      "evidence": [
+        {
+          "resource": "repo://fineract-repo/fineract-core/src/main/java/org/apache/fineract/portfolio/account/service/AccountTransfersReadPlatformService.java",
+          "version": "repo-file-v1:sha256:f06d7dc4f84c63d551b29aac0618402a5e68e65bac7105306d9a06ffd2ce1858"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.7.0",
+    "at": "2026-10-05T15:48:47.442Z"
+  }
+}

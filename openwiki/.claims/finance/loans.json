@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:eec11fb383209ce0820d2f24d86dd98f81cd156a755bf98e56711f14a80ca399",
+  "claims": [
+    {
+      "id": "claim_15eba0ecc5c24e6b97115112e5d742b4",
+      "statement": "Fineract 대출 모듈은 Loan 엔티티를 기반으로 원리금 상환 스케줄과 대출 라이프사이클을 관리한다.",
+      "evidence": [
+        {
+          "resource": "repo://fineract-repo/fineract-loan/src/main/java/org/apache/fineract/portfolio/loanaccount/domain/Loan.java",
+          "version": "repo-file-v1:sha256:8078027968a38643d9e436d0295a4727be7082014e829a56ad78901029655b90"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.7.0",
+    "at": "2026-10-05T15:48:47.442Z"
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:5e8aa58d7caff02d026012a4901a0eecabcf37bd78f1c02506533e6412944a58",
+  "claims": [
+    {
+      "id": "claim_3060b28c9d934d7ab9216d609ed5f4ed",
+      "statement": "Fineract 배포 환경은 docker-compose.yml을 통해 Fineract 백엔드와 데이터베이스 컨테이너 구성을 정의한다.",
+      "evidence": [
+        {
+          "resource": "repo://fineract-repo/docker-compose.yml",
+          "version": "repo-file-v1:sha256:4c9297db6a981f29d82171ea25fbb2532d49f9ab00a40e7d3f3ee41a3817fda2"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.7.0",
+    "at": "2026-10-05T15:48:47.442Z"
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:1e32c255f0ea67169affcd2925a08e98eb53cd58b926361d4a6383dab68232c4",
+  "claims": [
+    {
+      "id": "claim_2d07731360064d9997f7cad297060cd0",
+      "statement": "Fineract 예금 모듈은 SavingsAccount 엔티티를 통해 입출금 및 예치금 계좌의 이자 계산과 거래를 처리한다.",
+      "evidence": [
+        {
+          "resource": "repo://fineract-repo/fineract-savings/src/main/java/org/apache/fineract/portfolio/savings/domain/SavingsAccount.java",
+          "version": "repo-file-v1:sha256:2114968312acff88bb49fdd1a626b7daa4b1ef3688b104f5c3b16710ac95d59f"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.7.0",
+    "at": "2026-10-05T15:48:47.442Z"
+  }
+}

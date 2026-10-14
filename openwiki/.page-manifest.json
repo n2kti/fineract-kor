@@ -1,0 +1,82 @@
+{
+  "schemaVersion": 1,
+  "pages": {
+    "/openwiki/backend/tenancy-migrations.md": {
+      "pageVersion": "sha256:e8e57411bd90dbdd976822a129ddb9979e077b6c17bc459046b00b78c2516822",
+      "completedBy": "omp",
+      "completedRunId": "647806f7-e11a-46a7-b6b6-46febadb94f6",
+      "gitHead": "fc6baa62d0614f8314039ef0f49cfee24b90753f",
+      "sourceFingerprint": "sha256:e592de41b8e84910e803bffd21100d97571a0819130829fdfb01805d651ee1a9"
+    },
+    "/openwiki/contracts/api-events.md": {
+      "pageVersion": "sha256:b07eb72585dddcaa8d232de07669a02c8b0e19b07d3843e2a2c079679a1328af",
+      "completedBy": "omp",
+      "completedRunId": "647806f7-e11a-46a7-b6b6-46febadb94f6",
+      "gitHead": "fc6baa62d0614f8314039ef0f49cfee24b90753f",
+      "sourceFingerprint": "sha256:e592de41b8e84910e803bffd21100d97571a0819130829fdfb01805d651ee1a9"
+    },
+    "/openwiki/finance/accounting-risk.md": {
+      "pageVersion": "sha256:d95f3deaba56f44f1d383872ee90da6c32194ae41f656010f8256d74fc12980a",
+      "completedBy": "omp",
+      "completedRunId": "647806f7-e11a-46a7-b6b6-46febadb94f6",
+      "gitHead": "fc6baa62d0614f8314039ef0f49cfee24b90753f",
+      "sourceFingerprint": "sha256:e592de41b8e84910e803bffd21100d97571a0819130829fdfb01805d651ee1a9"
+    },
+    "/openwiki/finance/loans.md": {
+      "pageVersion": "sha256:eec11fb383209ce0820d2f24d86dd98f81cd156a755bf98e56711f14a80ca399",
+      "completedBy": "omp",
+      "completedRunId": "647806f7-e11a-46a7-b6b6-46febadb94f6",
+      "gitHead": "fc6baa62d0614f8314039ef0f49cfee24b90753f",
+      "sourceFingerprint": "sha256:e592de41b8e84910e803bffd21100d97571a0819130829fdfb01805d651ee1a9"
+    },
+    "/openwiki/finance/savings-deposits.md": {
+      "pageVersion": "sha256:1e32c255f0ea67169affcd2925a08e98eb53cd58b926361d4a6383dab68232c4",
+      "completedBy": "omp",
+      "completedRunId": "647806f7-e11a-46a7-b6b6-46febadb94f6",
+      "gitHead": "fc6baa62d0614f8314039ef0f49cfee24b90753f",
+      "sourceFingerprint": "sha256:e592de41b8e84910e803bffd21100d97571a0819130829fdfb01805d651ee1a9"
+    },
+    "/openwiki/finance/transfers-teller.md": {
+      "pageVersion": "sha256:d02108e767b337fc396a1470708f3f1546eb2c08c6af88c5aadfeb25425874a8",
+      "completedBy": "omp",
+      "completedRunId": "647806f7-e11a-46a7-b6b6-46febadb94f6",
+      "gitHead": "fc6baa62d0614f8314039ef0f49cfee24b90753f",
+      "sourceFingerprint": "sha256:e592de41b8e84910e803bffd21100d97571a0819130829fdfb01805d651ee1a9"
+    },
+    "/openwiki/frontend/core.md": {
+      "pageVersion": "sha256:333b332aabb84c7f75c18785cee372aeeb1a39bd1b93bc01437c36ea97f65317",
+      "completedBy": "omp",
+      "completedRunId": "647806f7-e11a-46a7-b6b6-46febadb94f6",
+      "gitHead": "fc6baa62d0614f8314039ef0f49cfee24b90753f",
+      "sourceFingerprint": "sha256:e592de41b8e84910e803bffd21100d97571a0819130829fdfb01805d651ee1a9"
+    },
+    "/openwiki/frontend/overview.md": {
+      "pageVersion": "sha256:876ca43f9bc0fafdb84560105612868280786c4e86de70831521a75db6c7e5ae",
+      "completedBy": "omp",
+      "completedRunId": "647806f7-e11a-46a7-b6b6-46febadb94f6",
+      "gitHead": "fc6baa62d0614f8314039ef0f49cfee24b90753f",
+      "sourceFingerprint": "sha256:e592de41b8e84910e803bffd21100d97571a0819130829fdfb01805d651ee1a9"
+    },
+    "/openwiki/operations/deployment.md": {
+      "pageVersion": "sha256:5e8aa58d7caff02d026012a4901a0eecabcf37bd78f1c02506533e6412944a58",
+      "completedBy": "omp",
+      "completedRunId": "647806f7-e11a-46a7-b6b6-46febadb94f6",
+      "gitHead": "fc6baa62d0614f8314039ef0f49cfee24b90753f",
+      "sourceFingerprint": "sha256:e592de41b8e84910e803bffd21100d97571a0819130829fdfb01805d651ee1a9"
+    },
+    "/openwiki/operations/testing.md": {
+      "pageVersion": "sha256:b454e1fcd4b466f13ec95e4a9dc5ea7e4a4dcbac70d5a6518d921ecbdb96f110",
+      "completedBy": "omp",
+      "completedRunId": "647806f7-e11a-46a7-b6b6-46febadb94f6",
+      "gitHead": "fc6baa62d0614f8314039ef0f49cfee24b90753f",
+      "sourceFingerprint": "sha256:e592de41b8e84910e803bffd21100d97571a0819130829fdfb01805d651ee1a9"
+    },
+    "/openwiki/quickstart.md": {
+      "gitHead": "fc6baa62d0614f8314039ef0f49cfee24b90753f",
+      "sourceFingerprint": "sha256:e592de41b8e84910e803bffd21100d97571a0819130829fdfb01805d651ee1a9",
+      "pageVersion": "sha256:762952d615d681f1a7356baf6c92f53168d294befb20a3e94ed523542ce1bfee",
+      "completedBy": "antigravity",
+      "completedRunId": "52bd7e34-386f-4135-a468-f1eff5479912"
+    }
+  }
+}

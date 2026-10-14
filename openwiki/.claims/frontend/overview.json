@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:876ca43f9bc0fafdb84560105612868280786c4e86de70831521a75db6c7e5ae",
+  "claims": [
+    {
+      "id": "claim_cfb97347a2ce4552b7108f5469814665",
+      "statement": "Fineract Backoffice 콘솔은 Angular 기반 SPA로 구성되며 관리자 업무 인터페이스를 제공한다.",
+      "evidence": [
+        {
+          "resource": "repo://fineract-backoffice-ui/package.json",
+          "version": "repo-file-v1:sha256:ecddd058b252fb4eba0103c7a82e9d0ac7049f6a5f7e8432f1b9d942d4e4f1f6"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.7.0",
+    "at": "2026-10-05T15:48:47.442Z"
+  }
+}

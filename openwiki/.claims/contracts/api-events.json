@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:b07eb72585dddcaa8d232de07669a02c8b0e19b07d3843e2a2c079679a1328af",
+  "claims": [
+    {
+      "id": "claim_b08a3fb438154efbbd8a323d18b2babe",
+      "statement": "Fineract의 공개 API 계약은 Spring Boot에 등록된 REST 리소스 엔드포인트를 통해 제공된다.",
+      "evidence": [
+        {
+          "resource": "repo://fineract-repo/fineract-provider/src/main/java/org/apache/fineract/ServerApplication.java",
+          "version": "repo-file-v1:sha256:488d0400c221712792d7abbb2f4d17ab57abb612cb003f9d13f0bcf95cc1dab3"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.7.0",
+    "at": "2026-10-05T15:48:47.442Z"
+  }
+}

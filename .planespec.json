@@ -1,0 +1,5 @@
+{
+  "gate": ["protected", "generated", "test"],
+  "test": ["backend/gradlew", "-p", "backend", ":fineract-loan:test", "--tests", "org.apache.fineract.portfolio.loanaccount.loanschedule.domain.AprCalculatorTest", "-q"],
+  "sources": ["backend/fineract-loan/src/main/java/org/apache/fineract/portfolio/loanaccount/loanschedule"]
+}

@@ -1,0 +1,121 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
+import { Component, HostListener, inject } from '@angular/core';
+
+import { Router, RouterModule } from '@angular/router';
+import { IonProgressBar } from '@ionic/angular/standalone';
+import { HeaderComponent } from './header.component';
+import { SidebarComponent } from './sidebar.component';
+import { BreadcrumbComponent } from './breadcrumb.component';
+import { GuidanceTourComponent } from '../shared';
+import { LoadingService } from '../core/services/loading.service';
+import { SidebarService } from '../core/services/sidebar.service';
+import { GuidanceService } from '../core/services/guidance.service';
+import { isTypingTarget, matchShortcut } from './keyboard-shortcuts';
+
+/**
+ * The primary application layout component (App Shell).
+ *
+ * Composes the `HeaderComponent` and `SidebarComponent` into a standard
+ * business application layout with a scrollable main content area.
+ */
+@Component({
+  selector: 'app-main-layout',
+  standalone: true,
+  imports: [
+    RouterModule,
+    IonProgressBar,
+    HeaderComponent,
+    SidebarComponent,
+    BreadcrumbComponent,
+    GuidanceTourComponent,
+  ],
+  template: `
+    <div class="app-container" [class.sidebar-collapsed]="sidebarService.isCollapsed()">
+      @if (loadingService.isLoading()) {
+        <ion-progress-bar type="indeterminate" class="global-loader"></ion-progress-bar>
+      }
+      <app-header />
+      <div class="main-wrapper">
+        <app-sidebar />
+        <main class="content-area" role="main">
+          <app-breadcrumb />
+          <router-outlet />
+        </main>
+      </div>
+      <app-guidance-tour />
+    </div>
+  `,
+  styles: [
+    `
+      .app-container {
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
+        overflow: hidden;
+        position: relative;
+      }
+      .app-container.sidebar-collapsed {
+        --sidebar-width: 64px;
+      }
+      .global-loader {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 1000;
+        height: 3px;
+      }
+      .main-wrapper {
+        display: flex;
+        flex: 1;
+        overflow: hidden;
+      }
+      .content-area {
+        flex: 1;
+        padding: 2rem;
+        background-color: var(--bg-color);
+        overflow-y: auto;
+      }
+    `,
+  ],
+})
+export class MainLayoutComponent {
+  protected readonly loadingService = inject(LoadingService);
+  protected readonly sidebarService = inject(SidebarService);
+  private readonly guidanceService = inject(GuidanceService);
+  private readonly router = inject(Router);
+
+  /** Global navigation shortcuts (Alt+letter) — see `keyboard-shortcuts.ts` for the bindings. */
+  @HostListener('window:keydown', ['$event'])
+  onKeydown(event: KeyboardEvent): void {
+    if (isTypingTarget(event.target)) return;
+
+    const shortcut = matchShortcut(event);
+    if (!shortcut) return;
+
+    event.preventDefault();
+    if (shortcut.action === 'help') {
+      this.guidanceService.startTour(this.router.url);
+    } else if (shortcut.route) {
+      this.router.navigate([shortcut.route]);
+    }
+  }
+}

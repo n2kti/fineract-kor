@@ -1,0 +1,212 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
+import { Component, OnInit, inject, signal } from '@angular/core';
+
+import { Router } from '@angular/router';
+import { FormsModule } from '@angular/forms';
+import { TranslateModule } from '@ngx-translate/core';
+import {
+  AccountingClosureService,
+  PostGlClosuresRequest,
+  OfficesService,
+  GetOfficesResponse,
+} from '../../api';
+import { HelpIconComponent } from '../../shared';
+import {
+  IonButton,
+  IonCard,
+  IonCardContent,
+  IonCardHeader,
+  IonCardTitle,
+  IonDatetime,
+  IonDatetimeButton,
+  IonItem,
+  IonLabel,
+  IonModal,
+  IonSelect,
+  IonSelectOption,
+  IonSpinner,
+  IonTextarea,
+} from '@ionic/angular/standalone';
+import { toIsoDate } from '../../core/utils/date-formatter';
+
+/**
+ * Component for closing an accounting period for an office.
+ */
+@Component({
+  selector: 'app-accounting-closure-form',
+  standalone: true,
+  imports: [
+    FormsModule,
+    TranslateModule,
+    HelpIconComponent,
+    IonButton,
+    IonSpinner,
+    IonTextarea,
+    IonItem,
+    IonLabel,
+    IonCardContent,
+    IonCardHeader,
+    IonCardTitle,
+    IonCard,
+    IonSelectOption,
+    IonSelect,
+    IonDatetime,
+    IonDatetimeButton,
+    IonModal,
+  ],
+  template: `
+    <div class="form-container">
+      <ion-card>
+        <ion-card-header>
+          <ion-card-title>
+            Close Accounting Period
+            <app-help-icon [helpTextKey]="'HELP.ACCOUNTING_CLOSURES_DESC'"></app-help-icon>
+          </ion-card-title>
+        </ion-card-header>
+
+        <ion-card-content>
+          <form #closureForm="ngForm" (ngSubmit)="onSubmit()" class="closure-form">
+            <div class="form-grid">
+              <!-- Office -->
+              <ion-item fill="outline">
+                <ion-label position="stacked">Office</ion-label>
+                <ion-select
+                  aria-label="Office"
+                  interface="popover"
+                  name="officeId"
+                  [(ngModel)]="request.officeId"
+                  required
+                >
+                  @for (office of offices(); track office.id) {
+                    <ion-select-option [value]="office.id">{{ office.name }}</ion-select-option>
+                  }
+                </ion-select>
+              </ion-item>
+
+              <!-- Closing Date -->
+              <ion-item fill="outline">
+                <ion-label position="stacked">Closing Date</ion-label>
+                <ion-datetime-button datetime="closingDate-picker"></ion-datetime-button>
+                <ion-modal [keepContentsMounted]="true">
+                  <ng-template>
+                    <ion-datetime
+                      id="closingDate-picker"
+                      data-testid="closingDate-picker"
+                      presentation="date"
+                      name="closingDate"
+                      [(ngModel)]="closingDate"
+                      required
+                    ></ion-datetime>
+                  </ng-template>
+                </ion-modal>
+              </ion-item>
+
+              <!-- Comments -->
+              <ion-item fill="outline" class="full-width">
+                <ion-label position="stacked">Comments</ion-label>
+                <ion-textarea
+                  aria-label="Comments"
+                  name="comments"
+                  [(ngModel)]="request.comments"
+                  rows="3"
+                ></ion-textarea>
+              </ion-item>
+            </div>
+
+            <div class="form-actions">
+              <ion-button fill="clear" type="button" (click)="onCancel()" [disabled]="isSaving()">
+                Cancel
+              </ion-button>
+              <ion-button
+                color="primary"
+                type="submit"
+                [disabled]="closureForm.invalid || isSaving()"
+              >
+                @if (isSaving()) {
+                  <ion-spinner name="crescent"></ion-spinner>
+                  Saving...
+                } @else {
+                  Close Period
+                }
+              </ion-button>
+            </div>
+          </form>
+        </ion-card-content>
+      </ion-card>
+    </div>
+  `,
+  styles: [
+    `
+      .form-container {
+        padding: 24px;
+        max-width: 800px;
+        margin: 0 auto;
+      }
+      .closure-form {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+      }
+      .form-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 16px;
+      }
+    `,
+  ],
+})
+export class AccountingClosureFormComponent implements OnInit {
+  private readonly closureService = inject(AccountingClosureService);
+  private readonly officeService = inject(OfficesService);
+  private readonly router = inject(Router);
+
+  readonly offices = signal<GetOfficesResponse[]>([]);
+  request: PostGlClosuresRequest = {
+    officeId: undefined,
+    comments: '',
+  };
+  closingDate = toIsoDate(new Date());
+  readonly isSaving = signal(false);
+
+  ngOnInit() {
+    this.officeService
+      .getOffices()
+      .subscribe((data: GetOfficesResponse[]) => this.offices.set(data));
+  }
+
+  onSubmit() {
+    this.isSaving.set(true);
+    const formattedDate = toIsoDate(this.closingDate);
+
+    this.request.closingDate = formattedDate;
+    this.request.dateFormat = 'yyyy-MM-dd';
+    this.request.locale = 'en';
+
+    this.closureService.postGlclosures(this.request).subscribe({
+      next: () => this.router.navigate(['/accounting/closures']),
+      error: () => this.isSaving.set(false),
+    });
+  }
+
+  onCancel() {
+    this.router.navigate(['/accounting/closures']);
+  }
+}
