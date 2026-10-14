@@ -331,4 +331,12 @@ class AprCalculatorTest {
                 .multiply(BigDecimal.valueOf(365));
         assertEquals(0, expectedRate.compareTo(annualRate), "Annual rate should be exactly 1216.67%");
     }
+
+    @Test
+    void testExceedsLegalMaxRate() {
+        assertEquals(false, aprCalculator.exceedsLegalMaxRate(BigDecimal.valueOf(19.99)));
+        assertEquals(false, aprCalculator.exceedsLegalMaxRate(BigDecimal.valueOf(20)));
+        assertEquals(true, aprCalculator.exceedsLegalMaxRate(BigDecimal.valueOf(20.01)));
+        assertEquals(false, aprCalculator.exceedsLegalMaxRate(null));
+    }
 }
