@@ -78,6 +78,16 @@ public class AprCalculator {
         return defaultAnnualNominalInterestRate;
     }
 
+    /** 대부업법·이자제한법 법정 최고금리(연 %). */
+    public static final BigDecimal LEGAL_MAX_ANNUAL_RATE = BigDecimal.valueOf(20);
+
+    /**
+     * 연 명목금리가 법정 최고금리를 넘는지 판정한다. 같으면 허용.
+     */
+    public boolean exceedsLegalMaxRate(final BigDecimal annualNominalInterestRate) {
+        return annualNominalInterestRate != null && annualNominalInterestRate.compareTo(LEGAL_MAX_ANNUAL_RATE) > 0;
+    }
+
     /**
      * Helper method to get the number of days in a year, handling ACTUAL appropriately.
      *
